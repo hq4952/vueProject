@@ -1,6 +1,9 @@
 <template>
 <div>
-search
+<h2>Search</h2>
+<h3>keyword:{{this.$route.params.keyword}}</h3>
+<h3>keyword2:{{this.$route.query.keyword2}}</h3>
+
 </div>
 </template>
 
