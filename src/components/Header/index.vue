@@ -41,6 +41,7 @@
 </template>
 
 <script type="text/ecmascript-6">
+import VueRouter from "vue-router"
 export default {
     data(){
         return {
@@ -50,15 +51,32 @@ export default {
     methods:{
         search(){
             // this.$router.push(`/search/${this.keyword}?keyword2=${this.keyword.toUpperCase()}`)//字符串方式
+            const originPush = VueRouter.prototype.push;
+            const originReplace = VueRouter.prototype.replace;
+
+            VueRouter.prototype.push = function(location,onComplete,onAbort){
+                if(onComplete === undefined && onAbort === undefined){
+                    return originPush.call(this,location).catch(err => {console.log(err)})
+                }else{
+                    originPush.call(this,location,onComplete,onAbort)
+                }
+            }
+            VueRouter.prototype.replace = function(location,onComplete,onAbort){
+                if(onComplete === undefined && onAbort === undefined){
+                    return originReplace.call(this,location).catch(err => {console.log(err)})
+                }else{
+                    originReplace.call(this,location,onComplete,onAbort)
+                }
+            }
             let location = {
                 name:"Search",
-                path:"/search/:keyword"
+                // path:"/search/:keyword"
             }
             if(this.keyword.trim()){
                 location.params = {keyword:this.keyword};
                 location.query = {keyword2:this.keyword.toUpperCase()}
             }
-            this.$router.push(location,() => {})
+            this.$router.push(location)
         }
     }
 }
