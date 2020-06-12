@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>函数节流防抖</title>
-    <!-- <script src="https://cdn.bootcss.com/lodash.js/4.17.15/lodash.js"></script> -->
+    <script src="https://cdn.bootcss.com/lodash.js/4.17.15/lodash.js"></script>
 </head>
 <body>
     <button id="nor">原始按钮</button>
@@ -12,14 +12,14 @@
     <button id="unti">防抖按钮</button>
 
     <script>
-        // function handler(e){
-        //     console.log("函数事件",this,e)
-        // }
-        // document.getElementById("nor").onclick = handler
-        // document.getElementById("save").onclick = _.throttle(handler,2000)
-        // document.getElementById("unti"),onclick = _.debounce(handler,1000)
-        // let arr1 = [1,2,3,0,0,0]
-        // console.log(arr1.splice(0,3).concat([4,5,6]))
+        function handler(e){
+            console.log("函数事件",this,e)
+        }
+        document.getElementById("nor").onclick = handler
+        document.getElementById("save").onclick = _.throttle(handler,2000)
+        document.getElementById("unti"),onclick = _.debounce(handler,1000)
+        let arr1 = [1,2,3,0,0,0]
+        console.log(arr1.splice(0,3).concat([4,5,6]))
         var merge = function(A, m, B, n) {
                 return A.splice(0,m).concat(B)
             };
@@ -39,10 +39,10 @@
                 console.log(index,arr)
                 return pre+nex
             });
-            console.log(res);
-            console.log(str.substr(1,4));
-            console.log(str.slice(1,4));
-            console.log(str.substring(0).concat("sxf"))
-    </script>
+    //         console.log(res);
+    //         console.log(str.substr(1,4));
+    //         console.log(str.slice(1,4));
+    //         console.log(str.substring(0).concat("sxf"))
+    // </script>
 </body>
 </html>

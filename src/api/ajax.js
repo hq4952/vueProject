@@ -1,5 +1,6 @@
 import axios from "axios";
 import Nprogress from "nprogress"
+import "nprogress/nprogress.css"
 //二次封装axios 
 const instence = axios.create({
     //设置基础路径

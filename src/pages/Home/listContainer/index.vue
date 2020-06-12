@@ -3,28 +3,9 @@
             <div class="sortList clearfix">
                 <div class="center">
                     <!--banner轮播-->
-                    <div class="swiper-container" id="mySwiper">
-                        <div class="swiper-wrapper">
-                            <div class="swiper-slide">
-                                <img src="../images/home/banner1.jpg" />
-                            </div>
-                            <!-- <div class="swiper-slide">
-                                <img src="../images/home/banner2.jpg" />
-                            </div>
-                            <div class="swiper-slide">
-                                <img src="../images/home/banner3.jpg" />
-                            </div>
-                            <div class="swiper-slide">
-                                <img src="../images/home/banner4.jpg" />
-                            </div> -->
-                        </div>
-                        <!-- 如果需要分页器 -->
-                        <div class="swiper-pagination"></div>
-
-                        <!-- 如果需要导航按钮 -->
-                        <div class="swiper-button-prev"></div>
-                        <div class="swiper-button-next"></div>
-                    </div>
+                    <!-- 利用ref属性标识 -->
+                    <!-- 引入轮播组件 -->
+                    <Carousel :bannerList="banners"/>
                 </div>
                 <div class="right">
                     <div class="news">
@@ -110,7 +91,22 @@
 </template>
 
 <script type="text/ecmascript-6">
+
+import "swiper/css/swiper.min.css"
+import {mapState} from "vuex"
 export default {
+    mounted(){
+        //     setTimeout(() => {
+               
+        // },500)  
+            
+    },
+   computed:{
+        ...mapState({
+            banners:state => state.home.bannersData
+        })
+    },
+   
 }
 </script>
 

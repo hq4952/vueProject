@@ -16,6 +16,10 @@ export default {
     Header,
     Footer
   },
+  //在app挂载完成发请求即可
+  mounted(){
+    this.$store.dispatch("reqBaseCategoryList");
+  }
   // async mounted(){
   //   const res = await getBaseCategoryList()
   //   console.log("res:",res)

@@ -33,7 +33,7 @@
                 <div class="searchArea">
                     <form action="###" class="searchForm">
                         <input type="text" id="autocomplete" class="input-error input-xxlarge" v-model="keyword"/>
-                        <button class="sui-btn btn-xlarge btn-danger" type="button" @click="search">搜索</button>
+                        <button class="sui-btn btn-xlarge btn-danger"  @click.prevent="search">搜索</button>
                     </form>
                 </div>
             </div>
@@ -47,6 +47,9 @@ export default {
         return {
             keyword:""
         }
+    },
+    mounted(){
+        this.$bus.$on("removekeyword",this.removekeyword)
     },
     methods:{
         search(){
@@ -72,12 +75,26 @@ export default {
                 name:"Search",
                 // path:"/search/:keyword"
             }
+            //处理原有query参数
+            const {query} = this.$route;
+            if(query){
+                location.query = query
+            }
             if(this.keyword.trim()){
                 location.params = {keyword:this.keyword};
-                location.query = {keyword2:this.keyword.toUpperCase()}
+                // location.query = {keyword2:this.keyword.toUpperCase()}
             }
-            this.$router.push(location)
-        }
+            //判断是否在search组件 如果是则用replace发送
+            if(this.$route.name === "Search"){
+                this.$router.replace(location)
+            }else{
+                this.$router.push(location)
+
+            }
+        },
+       removekeyword(){
+           this.keyword = ""
+       }
     }
 }
 </script>

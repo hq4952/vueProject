@@ -2,6 +2,7 @@ import Home from "../src/pages/Home/index.vue"
 import Search from "../src/pages/Search/index.vue"
 import Login from "@/pages/Login/index.vue"
 import Register from "@/pages/Register/index.vue"
+import Detail from "../src/pages/Deatil/index.vue"
 export default [
     {
         path:"/",
@@ -32,5 +33,9 @@ export default [
         meta:{
             isHideFooter: true
         } 
+    },
+    {
+        path:"/detail/:id?",
+        component:Detail
     }
 ]

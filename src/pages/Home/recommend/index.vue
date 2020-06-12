@@ -3,30 +3,28 @@
             <div class="py-container">
                 <ul class="recommend">
                     <li class="clock">
-                        <div class="time">
+                        <div class="time" >
                             <img src="../images/home/clock.png" />
                             <h3>今日推荐</h3>
                         </div>
                     </li>
-                    <li class="banner">
-                        <img src="../images/home/today01.png" />
+                    <li class="banner" v-for="item in recData" :key="item.id">
+                        <img :src="item.imgUrl" />
                     </li>
-                    <li class="banner">
-                        <img src="../images/home/today02.png" />
-                    </li>
-                    <li class="banner">
-                        <img src="../images/home/today03.png" />
-                    </li>
-                    <li class="banner">
-                        <img src="../images/home/today04.png" />
-                    </li>
+                   
                 </ul>
             </div>
     </div>
 </template>
 
 <script type="text/ecmascript-6">
+import {mapState} from "vuex"
 export default {
+    computed:{
+        ...mapState({
+            recData :  state => state.home.recommendData
+        })
+    }
 }
 </script>
 

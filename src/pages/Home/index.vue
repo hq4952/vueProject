@@ -14,7 +14,7 @@
         <like/>
 
         <!--楼层-->
-        <floor/>
+        <floor v-for="floor in floors" :key="floor.id" :floorData="floor"/>
 
         <!--商标-->
         <brand/>
@@ -29,8 +29,9 @@ import rank from "./rank"
 import like from "./like"
 import floor from "./floor"
 import brand from "./brand"
-
+import {mapState} from "vuex"
 export default {
+
     components:{
         listContainer,
         recommend,
@@ -38,6 +39,16 @@ export default {
         like,
         floor,
         brand
+    },
+    mounted(){
+        this.$store.dispatch("reqBannersData");
+        this.$store.dispatch("reqFloorData");
+        this.$store.dispatch("reqRecommend")
+    },
+    computed:{
+        ...mapState({
+            floors:state => state.home.floorData
+        })
     }
 }
 </script>

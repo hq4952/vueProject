@@ -2,7 +2,38 @@
     <div class="type-nav">
             <div class="container">
                 <button @click="getData">点击获取数据</button>
-                <h2 class="all" @mouseenter="view" @mouseleave="disview">全部商品分类</h2>
+                <div @mouseleave="hideCategory" @mouseenter="currentIndex = -1">
+                    <h2 class="all" @mouseenter="showCategory">全部商品分类</h2>
+                    <transition name="ifshow">
+                        <div class="sort" v-show="isShowFirst" >
+                        <!-- 给共同父元素绑定事件 利用事件冒泡处理 -->
+                            <div class="all-sort-list2" @click="search">
+                                <div class="item" :class="{item_on:currentIndex === index}" v-for=" (c1,index) in categoryList" 
+                                :key="c1.categoryId" @mouseenter="showCategory(index)" > 
+                                    <h3>
+                                        <!--  @click="search({categoryName:c3.categoryName,category3Id:c3.categoryId})" 
+                                        直接给标签绑定事件导致事件太多 所以使用事件委派 给父元素绑定事件 -->
+                                        <a href="" :data-categoryName="c1.categoryName" :data-category1Id="c1.categoryId">{{c1.categoryName}}</a>
+                                    </h3>
+                                    <div class="item-list clearfix">
+                                        <div class="subitem">
+                                            <dl class="fore" v-for="c2 in c1.categoryChild" :key="c2.categoryId">
+                                                <dt>
+                                                    <a href="" :data-categoryName="c2.categoryName" :data-category2Id="c2.categoryId">{{c2.categoryName}}</a>
+                                                </dt>
+                                                <dd>
+                                                    <em v-for="c3 in c2.categoryChild" :key="c3.categoryId">
+                                                        <a href="" :data-categoryName="c3.categoryName" :data-category3Id="c3.categoryId">{{c3.categoryName}}</a>
+                                                    </em>
+                                                </dd>
+                                            </dl>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </transition>
+                </div>
                 <nav class="nav">
                     <a href="###">服装城</a>
                     <a href="###">美妆馆</a>
@@ -13,43 +44,30 @@
                     <a href="###">有趣</a>
                     <a href="###">秒杀</a>
                 </nav>
-                <div class="sort" v-show="ishome">
-                    <div class="all-sort-list2">
-                        <div class="item" v-for="c1 in categoryList" :key="c1.categoryId">
-                            <h3>
-                                <a href="">{{c1.categoryName}}</a>
-                            </h3>
-                            <div class="item-list clearfix">
-                                <div class="subitem">
-                                    <dl class="fore" v-for="c2 in c1.categoryChild" :key="c2.categoryId">
-                                        <dt>
-                                            <a href="">{{c2.categoryName}}</a>
-                                        </dt>
-                                        <dd>
-                                            <em v-for="c3 in c2.categoryChild" :key="c3.categoryId">
-                                                <a href="">{{c3.categoryName}}</a>
-                                            </em>
-                                            
-                                        </dd>
-                                    </dl>
-                                </div>
-                            </div>
-                        </div>
-                        
-                    </div>
-                </div>
+                
             </div>
     </div>
 </template>
 
 <script type="text/ecmascript-6">
-import {mapState,mapMutations,mapActions,mapGetters} from "vuex"
+import {mapState,mapMutations,mapActions,mapGetters} from "vuex";
+//引入lodash包中的节流函数
+import throttle from "lodash/throttle";
+
 export default {
+    data(){
+        return {
+            currentIndex:-2,
+            isShowFirst:true
+        }
+    },
+    beforeMount(){
+        this.isShowFirst = this.$route.path === "/"
+    },
     computed:{
-            ishome(){
-                return this.$route.path === "/" ? true : false
-            },
-        // ...mapState(["categoryList"]) 使用xuex多模块编程 数组中不能直接写名称
+            
+        // ...mapState(["categoryList"]) 使用vuex多模块编程 数组中不能直接写名称
+        //vuex多模块编程获取组件中数据的两种方式
             ...mapState({
                 categoryList1:state => state.home.categoryList
             }),
@@ -58,23 +76,66 @@ export default {
             }
     },
     methods:{
-        view(){
-            
-        },
-        disview(){
-            
-        },
-        
+       
         getData(){
             console.log(this.categoryList)
             console.log(this.$route.path)
 
         },
-        ...mapActions(["reqBaseCategoryList"])
+        //在listnav组件中发请求会导致多次请求 所以应在app中发请求
+        // ...mapActions(["reqBaseCategoryList"]),
+        search(event){
+            const {categoryname,category1id,category2id,category3id} = event.target.dataset
+            //如果点击的不是a标签 则直接返回 否则会报错
+            if(!categoryname) return 
+            const query = {
+                categoryname,
+            }
+            if(category1id){
+                query.category1Id = category1id
+            }else if(category2id){
+                query.category2Id = category2id
+            }else if(category3id){
+                query.category3Id = category3id
+            }
+            // 标签绑定写法
+            // if(category1Id){
+            //     query.categoryId = category1Id
+            // }else if(category2Id){
+            //     query.categoryId = category2Id
+            // }else if(category3Id){
+            //     query.categoryId = category3Id
+            // }
+            //处理原有的params参数
+            const {params} = this.$route;
+            const location = {
+                name:"Search",
+                query,
+            }
+            if(params){
+                // console.log(222)
+                location.params = params
+            }
+            this.$router.push(location)
+        },
+        hideCategory(){
+            this.currentIndex = -2;
+            if(this.$route.path !== "/"){
+                this.isShowFirst = false
+            }
+        },
+        showCategory:throttle(function(index){
+            if(this.currentIndex !== -2){
+                this.isShowFirst = true
+                this.currentIndex = index
+            }
+        },300)
     },
     mounted(){
         // this.$store.dispatch("reqBaseCategoryList");
-        this.reqBaseCategoryList()
+        //在listnav组件中发请求会导致多次请求 所以应在app中发请求
+
+        // this.reqBaseCategoryList()
     }
 }
 </script>
@@ -88,6 +149,7 @@ export default {
             margin: 0 auto;
             display: flex;
             position: relative;
+            
 
             .all {
                 width: 210px;
@@ -110,7 +172,7 @@ export default {
                 }
             }
 
-            .sort {
+            .sort { 
                 position: absolute;
                 left: 0;
                 top: 45px;
@@ -119,6 +181,13 @@ export default {
                 position: absolute;
                 background: #fafafa;
                 z-index: 999;
+                &.ifshow-enter,&.ifshow-leave-to{
+                    opacity: 0;
+                    height: 0px;
+                }
+                &.ifshow-leave-active,&.ifshow-enter-active{
+                    transition: all .5s;
+                }
 
                 .all-sort-list2 {
                     .item {
@@ -189,7 +258,8 @@ export default {
                             }
                         }
 
-                        &:hover {
+                        &.item_on {
+                            background-color: #ccc;
                             .item-list {
                                 display: block;
                             }
